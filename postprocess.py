@@ -10,9 +10,7 @@ import csv
 
 
 
-
-
-usage = 'postprocess.py sr resfn1 resfn2 resfn3 outfn\n'
+usage = 'postprocess.py sr resfn1 resfn2 resfn3 outfn'
 
 separator = ','
 
