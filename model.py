@@ -44,7 +44,6 @@ def get_graph(weighted_bigrams, mode=None):
 
 
 
-
 def remove_neg_edges(G):
     bunch = [(u, v) for (u, v, d) in G.edges(data=True) if d['w'] < 0]
     G.remove_edges_from(bunch)
@@ -73,17 +72,21 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'rmn':
         print 'Beginning to load graph at %s' % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
         G = nx.read_gpickle(sys.argv[2])
+
         print 'Beginning to remove negative edges at %s' % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
         G2 = remove_neg_edges(G)
         print 'Finished to remove negative edges at %s' % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
+
         print 'Beginning to save graph at %s' % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
+
         nx.write_gpickle(G2, sys.argv[3])
         print 'All done! at %s' % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
-    elif sys.argv[1] == 'rmmin':
-        print 'Beginning to load graph at %s' % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
-        G = nx.read_gpickle(sys.argv[2])
-        data = 
-        print 'Beginning to remove min weight edges at %s' % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
+
+    # elif sys.argv[1] == 'rmmin':
+    #     print 'Beginning to load graph at %s' % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
+    #     G = nx.read_gpickle(sys.argv[2])
+    #     data = pickle.load(open(sys.argv[3]), 'rb')
+    #     print 'Beginning to remove min weight edges at %s' % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
 
 
 

@@ -45,8 +45,9 @@ def compute_pmi(cooccur_res, unigram_freq_dict, pmi, unigram_freq, bigram_freq_d
 
 def load_freq_dict(fn, mode=None):
     results = {}
-    with codecs.open(fn, 'r', 'utf-8') as infile:
+    with codecs.open(fn, 'r') as infile:
         for item in infile:
+            if mode != 'results':
                     t = strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
                     if len(results) % 100000 == 0:
                         print 'Loaded %s items from %s at %s' % (len(results), fn, t)
@@ -63,6 +64,14 @@ def load_freq_dict(fn, mode=None):
                                 bigram = item.split()[0:2]
                                 freq = item.split()[2]
                             results.update({tuple(bigram): float(freq)})
+            elif mode == 'results':
+                    print 'yep'
+                    w1 = item[0]
+                    w2 = item[1]
+                    gs_sim = item[2]
+                    sim1 = item[3]
+                    path1 = item[4:]
+                    results.update({(w3, w4): [gs_sim, sim1, path1]})
     return results
 
 

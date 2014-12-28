@@ -17,40 +17,25 @@ from time import gmtime, strftime
 import random
 
 
+
 SnowballStemmer = nltk.stem.snowball.RussianStemmer(ignore_stopwords=True)
 usage = '''usage: semclos.py modelfilename mode {path - weightedpath - pmi} maxpathlength testfilename outfilename (showpath)'''
 
-if(len(sys.argv) < 2):
-        print (usage)
-        sys.exit()
-
-def get_min_max(G):
-    weights = sorted((d[w] for (u,v,d) in G.edges(data=True) for w in d if d['w'] >= 0))
-    return ((weights[0], weights[len(weights)-1]))
-
-def normalize_sim(G, sim_fn):
-    max_w, min_w = get_min_max(G)
-    sim_fn_list = sorted(sim_fn.values())
-    min_sim = sim_fn_list[0]
-    max_sim = sim_fn_list[len(sim_fn_list)-1]
-    print 'max_sim: %s, min_sim: %s ' % (max_sim, min_sim)
-    print 'max_w: %s, min_w: %s ' % (max_w, min_w )
-    # some intricate normalization here
-    pass
 
 
 
-def get_testsample(fn):
+
+def get_sample(fn):
     with codecs.open(fn, 'rb') as infile:
         csv_reader = csv.DictReader(infile, delimiter=',')
         results = {}
         for row in csv_reader:
-            w1 = row['word1']
-            w3 = unicode(w1, encoding='utf-8', errors='replace')
-            w2 = row['word2']
-            w4 = unicode(w2, encoding='utf-8', errors='replace')
-            sim = row['sim']
-            results.update({(w3, w4): sim})
+                w1 = row['word1']
+                w3 = unicode(w1, encoding='utf-8', errors='replace')
+                w2 = row['word2']
+                w4 = unicode(w2, encoding='utf-8', errors='replace')
+                sim = row['sim']
+                results.update({(w3, w4): sim})
     return results
 
 
@@ -114,31 +99,34 @@ def save(outfn, header, res):
             sim, t = res[i]
             sim2, path = t
             outfile.write(separator.join(i) + separator + str(sim) + separator + str(sim2)
-                         + separator  + separator.join(path) + '\n')
+                         + separator  + str(path) + '\n')
 
-def _test_is_connected():
-    l = is_connected(u'asdf´', u'lkj', G2, mode='pathweigthed', length=8)
+def _test_is_connected(G, word1, word2):
+    l = is_connected(G, word1, word2,  mode='pathweigthed', length=8)
     print l
 
 
 if __name__ == '__main__':
+    if(len(sys.argv) < 2):
+        print (usage)
+        sys.exit()
+
     G = nx.read_gpickle(sys.argv[1])
-    testsamlpe = get_testsample(sys.argv[4])
-    normalize_sim(G, testsamlpe)
-    if len(sys.argv) > 5:
-        n = 0
-        if sys.argv[6] == 'showpath':
-            res = get_sim(testsamlpe, G, mode=sys.argv[2], length=sys.argv[3], showpath=True)
-            for i in sorted(res, key=res.get, reverse=True):
-                sim, t = res[i]
-                sim2, path = t
-                if sim2 == 0.0 and sim > 0.09: n+=1
-                print ' '.join(i), sim, sim2, ', '.join(path)
+    testsamlpe = get_sample(sys.argv[4])
+    n = 0
+    if sys.argv[6] == 'showpath':
+        res = get_sim(testsamlpe, G, mode=sys.argv[2], length=sys.argv[3], showpath=True)
+        for i in sorted(res, key=res.get, reverse=True):
+            sim, t = res[i]
+            sim2, path = t
+            if sim2 == 0.0 and sim > 0.09: n+=1
+            print ' '.join(i), sim, sim2, ', '.join(path)
         print '%s words without similarity where it should have been' % n
     else:
         res = get_sim(testsamlpe, G, mode=sys.argv[2], length=sys.argv[3], showpath=False)
         for i in sorted(res, key=res.get, reverse=True):
             print ' '.join(i), res[i]
-    header = ['word1', 'word2', 'GS', 'path']
+    header = ['word1', 'word2', 'GS', 'sim', 'path']
     separator = ';'
     save(sys.argv[5], header, res)
+
