@@ -64,14 +64,6 @@ def load_freq_dict(fn, mode=None):
                                 bigram = item.split()[0:2]
                                 freq = item.split()[2]
                             results.update({tuple(bigram): float(freq)})
-            elif mode == 'results':
-                    print 'yep'
-                    w1 = item[0]
-                    w2 = item[1]
-                    gs_sim = item[2]
-                    sim1 = item[3]
-                    path1 = item[4:]
-                    results.update({(w3, w4): [gs_sim, sim1, path1]})
     return results
 
 
