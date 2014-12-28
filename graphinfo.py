@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -!- coding: utf-8 -!-
-# usage: susage: graphinfo.py modelfilename node 
+# usage: susage: graphinfo.py graphinfo modelfilename node 
 # usage: graphinfo.py minmax graphfilename outgraphfilename
 import codecs
 import os
@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import numpy
 
 
-usage = '''usage: graphinfo.py modelfilename node \n
+usage = '''usage: graphinfo.py graphinfo modelfilename node \n
             usage: graphinfo.py minmax graphfilename outgraphfilename 
         '''
 
@@ -45,17 +45,13 @@ def get_and_write_edges_info(in_fn, out_fn):
     print 'Beginning to count weights at %s' % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
     weights = [d[w] for (u, v, d) in G.edges(data=True) for w in d]
     print [d for n, d in enumerate(weights) if n < 10]
-
-    print 'Beginning to count weights at %s' % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
     w = numpy.array(weights) 
-    print 'Finished to count weights %s' % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
-    print 'Beginning to count max and min weights with numpy array at %s' % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
+
     print "min, max, sum"
     min_w = w.min()
     max_w = w.max()
     sum_w = w.sum()
     print min_w, max_w, sum_w
-    print 'Finished to count max and min weights at %s' % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
     print "mean, std dev"
     mean = w.mean()
     std = w.std()
@@ -70,7 +66,7 @@ def get_and_write_edges_info(in_fn, out_fn):
     subdict['mean'] = mean
     subdict['std'] = std
 
-    print 'Saving results to %s ' % out_fn
+    print 'Saving results to %s' % out_fn
     pickle.dump(dict, open(out_fn, 'ab'))
 
 
@@ -89,7 +85,7 @@ if __name__ == '__main__':
         print nx.info(G)
         print 'Average shortest path length: %s ' % nx.average_shortest_path_length(G)
         print 'Graph diameter: %s' % nx.diameter(G)
-        print 'Eccentricity: %s' % nx.eccentricity(G, v=u'год')
+        print 'Eccenricity: %s' % nx.eccentricity(G, v=u'год')
         # degree_sequence=sorted(nx.degree(G).values(), reverse=True) # degree sequence
         # print "Degree sequence", degree_sequence
         # dmax=max(degree_sequence)
